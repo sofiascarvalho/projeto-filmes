@@ -31,6 +31,14 @@ const insertFilme= async function(filme){
                                     ${filme.foto_capa}, 
                                     ${filme.link_trailer}
                                     )`
+
+    //executa o scriptSQL no banco de dados e aguarda o retorno do BD para saber se deu certo
+    let result=await prisma.$executeRawUnsafe(sql)
+
+    if(result)
+        return true
+    else
+        return false
 }
 
 //funcao para atualizar um filme existente
@@ -51,4 +59,12 @@ const selectAllFilme=async function () {
 //funco para buscar um filme pelo id
 const selectByIdFilme=async function () {
     
+}
+
+module.exports={
+    insertFilme,
+    updateFilme,
+    deleteFilme,
+    selectAllFilme,
+    selectByIdFilme
 }
