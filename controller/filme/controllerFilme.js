@@ -5,6 +5,12 @@
  * versao: 1.0 
  ***************************************************************************************/
 
+//import do arquivo de mensagem e status code do projeto
+const message=require('../../modulo/config.js')
+
+//import do aquivo para realizar o CRUD de dados no Banco de Dados
+const filmeDAO=require('../../model/DAO/filme.js')
+
 //funcao para tratar a insercao de um filme no DAO
 const inserirFilme=async function(filme){
     let response={}
@@ -16,10 +22,16 @@ const inserirFilme=async function(filme){
         filme.link_trailer==undefined   ||filme.link_trailer>200 
     )
     {
-        response.status_code=400
-        response.message='Os atributos informados na requisição não estão de acordo. Ex: Campos obrigatórios, Quantidade de caracteres excedidos.'
-    }
+        return message.ERROR_REQUIRED_FIELDS //400
+    }else{
+        //chama a funcao para inserir no banco de dados e aguarda o retorno da funcao
+        let resultFilme=await filmeDAO.insertFilme(filme)
 
+        if(resultFilme)
+            return message.SUCCESS_CREATED_ITEM //201
+        else
+        return message.ERROR_INTERNAL_SERVER //500
+    }
 }
 
 //funcao para tratar a atualizacao de um filme no DAO
